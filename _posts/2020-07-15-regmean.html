@@ -1,0 +1,62 @@
+---
+title: Regression to the mean
+layout: default
+---
+
+<header>
+  <h1>Regression to the mean</h1>
+  <p class="author">Jonathan Ronen</p>
+</header>
+
+
+<main>
+  <article>
+    <p>This is something you likely have some intuition about. Consider the following:</p>
+
+    <ul>
+        <li>A poll shows some politician leading by a higher margin than earlier polls. What do you expect the next poll to show?</li>
+        <li>A financial instrument dropped 10% today. What do you expect it might do tomorrow?</li>
+        <li>A woman wins a nobel prize. Where do you expect her children's science careers to peak?</li>
+    </ul>
+
+
+
+    <p>If your intuition is the same as mine, in these cases you'd expect the first part to be an outlier, and the second part to "revert to the mean", i.e. not be an extreme outlier as well.</p>
+
+    <p>Turns out this intuition can be backed by something you might call "a law of statistics", which was discovered by Sir Francis Galton<sup><a href="#fn1" id="ref1">1</a></sup>. Galton noticed that children's heights were correlated with their parents' (and thus came up with the term "co-related"). He noticed that tall parents have tall kids, and wondered why the overall distribution in the population remained constant. That is, if tall parents have been having tall children for generations, where are the 7-foot humans today? In his paper in the 1886 Journal of the Anthropological Institute<sup><a href="#fn2" id="ref2">2</a></sup>, he produced this oldschool figure:</p>
+
+    <figure class="center">
+          <img src="/assets/images/galton-ellipse.png"
+            loading="lazy" alt="Plate X" width="800" />
+          <figcaption>
+            Figure from the paper, showing the relationship between parents' and children's heights. I added the colors.
+          </figcaption>
+        </figure>
+
+    <p>The x-axis has children's heights, and the y-axis the heights of parents. The ellipse shows the familiar shape of a bivariate normal distribution. The green line is the axis of symmetry ($x=y$), and the pink line is the regression line ($x=ay$).</p>
+
+    <p>The important observation: The slope of the regression line regressing children's height on their parents', is less than 1. If it were larger than 1, then very tall parents would have very-taller children generation after generation, and the distribution would widen out. The coefficient being less than 1, this is where regression to the mean happens.</p>
+
+    <p>So while tall parents have taller-than-average children, those children still likely to be less tall than their tall parent. While a politician who polls extremely high is likely to poll high in the following polls, she's not likely to poll quite as high next time. And whenever a parent is an extreme outlier in any sense, be it height or number of nobel prizes won, their children are likely to be less extreme in that same respect, that is, revert to the mean.</p>
+    
+
+    <div class="footnotes">
+      <p id="fn1">
+        1. <a href="https://en.wikipedia.org/wiki/Regression_toward_the_mean.">https://en.wikipedia.org/wiki/Regression_toward_the_mean.</a><a href="#ref1" title="Jump back to footnote 1 in the text.">&#8617;</a>
+      </p>
+      <p id="fn2">
+        2. <a href="http://galton.org/essays/1880-1889/galton-1886-jaigi-regression-stature.pdf">http://galton.org/essays/1880-1889/galton-1886-jaigi-regression-stature.pdf</a><a href="#ref2" title="Jump back to footnote 2 in the text.">&#8617;</a>
+      </p>
+    </div>
+
+  </article>
+</main>
+
+<script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'],],
+      },
+    };
+  </script>
+  <script id="MathJax-script" async src="/assets/js/tex-mml-chtml.js"></script>

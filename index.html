@@ -1,331 +1,296 @@
-<!DOCTYPE html>
-<html lang="en">
+---
+title: Jonathan Ronen
+layout: default
+---
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Jonathan Ronen</title>
+<header>
+  <h1>Jonathan Ronen</h1>
+  <p class="author">
+    M.Sc. Electrical & Control Engineering<br/>
+    Ph.D. Computational Biology & Machine Learning<br/>
+    <a href="https://github.com/jonathanronen" style="text-decoration: none;">
+      <i class="fa fa-github" style="font-size:20px"></i>
+    </a>&nbsp;
+    <a href="https://www.linkedin.com/in/jronen/" style="text-decoration: none;">
+      <i class="fa fa-linkedin" style="font-size:20px"></i>
+    </a>&nbsp;
+    <a href="https://scholar.google.de/citations?user=kUfwhMEAAAAJ" style="text-decoration: none;">
+      <i class="fa fa-graduation-cap" style="font-size:20px"></i>
+    </a>
+  </p>
+</header>
 
-  <meta name="description"
-    content="Jonathan Ronen - Machine learning researcher; data scientist; software developer." />
-  <meta name="keywords" content="machine learning,data science,freelance,freelancer" />
-  <meta property="og:title" content="Jonathan Ronen" />
-  <meta property="og:url" content="https://jonathan.ronen.me" />
-  <meta property="og:description"
-    content="A personal website" />
-  <meta property="og:type" content="website" />
+<div class="abstract">
+  <!-- <h2>Bio</h2> -->
+  <p>
+    Berlin-based machine learning researcher and data scientist with 10+ years of experience in software engineering, computational social science, biomedical research and AI. Founder and CTO at <a href="https://arcas.ai/">Arcas</a> This is my personal website.
+  </p>
+</div>
 
-  <link rel="stylesheet" href="style.css" />
-  <link rel="stylesheet" href="fonts/font-awesome.min.css">
-</head>
+<nav role="navigation" class="toc">
+  <!-- <h2>Contents</h2> -->
+  <ol>
+    <li>
+      <a href="#research">Research</a>
+      <ol>
+        <li><a href="#genomics">Genomics</a></li>
+        <li><a href="#political-science">Political science</a></li>
+        <li><a href="#production-optimization">Production optimization</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#open-source-software">Open source software</a>
+    </li>
+    <li><a href="#selected-publications">Selected publications</a></li>
+    <li><a href="#side-projects">Side projects</a></li>
+    <li><a href="#freelance">Freelance</a></li>
+  </ol>
+</nav>
 
-<body id="top">
-  <header>
-    <h1>Jonathan Ronen</h1>
-    <p class="author">
-      M.Sc. Electrical & Control Engineering<br/>
-      Ph.D. Computational Biology & Machine Learning<br/>
-      <a href="https://github.com/jonathanronen" style="text-decoration: none;">
-        <i class="fa fa-github" style="font-size:20px"></i>
-      </a>&nbsp;
-      <a href="https://www.linkedin.com/in/jronen/" style="text-decoration: none;">
-        <i class="fa fa-linkedin" style="font-size:20px"></i>
-      </a>&nbsp;
-      <a href="https://scholar.google.de/citations?user=kUfwhMEAAAAJ" style="text-decoration: none;">
-        <i class="fa fa-graduation-cap" style="font-size:20px"></i>
-      </a>
-    </p>
-  </header>
+<main>
+  <article>
+    <h2 id="research">Research</h2>
+    <h3 id="genomics">Genomics</h3>
+    <p>My research in genomics has focused on methods development to accelerate translation of high end genomics platforms from the lab to the clinic.</p>
 
-  <div class="abstract">
-    <!-- <h2>Bio</h2> -->
+    <h4 id="research-maui">A novel neural network architecture for multi-modal data integration</h4>
+    <p>I developed a novel Stacked Variational Autoencoder called <em>maui</em> to integrate data from different omics experiments, and used it to get <b>state of the art results in cancer sub-typing and patient survival prediction</b>.</p>
+    <figure class="center">
+      <img src="img/svae.png"
+        loading="lazy" alt="Schematic of stacked variational autoencoder" width="800" />
+      <figcaption>
+        Schematic of a stacked Variational Autoencoder (<em>maui</em>)
+      </figcaption>
+    </figure>
+    <figure class="center">
+      <img src="img/mauiplots.png"
+        loading="lazy" alt="Maui achieves state of the art performance on cancer subtyping and patient survival prediction" width="800" />
+      <figcaption>
+        maui achieves state of the art performance on cancer subtyping and patient survival prediction
+      </figcaption>
+    </figure>
+    <a href="https://www.life-science-alliance.org/content/2/6/e201900517">Read the paper</a>
+
+    <h4 id="research-netsmooth">Using gene networks to increase the signal-to-noise ratio in noisy experiments</h4>
+    <p>I used a random walks process on a protein-protein interaction network to <em>smooth</em> noisy data coming from single cell RNA sequencing experiments. The method is an alternative to commonly used <em>imputation</em> methods, which tend to introduce many artificial artifacts in the data.</p>
+    <figure class="center" style="width: 67%;">
+      <img src="img/netsmooth.png"
+        loading="lazy" alt="Sketch of netsmooth algorithm" />
+      <figcaption>
+        The netSmooth algorithm
+      </figcaption>
+    </figure>
+    
+    <p>The netSmooth method <b>improves identifiability of cell types from single cell RNA sequencing</b>, but only when using real gene-gene networks (i.e. this is not a random result obtained by a lucky shuffle of the data)</p>
+    <figure class="center" style="width: 80%;">
+      <img src="img/blood_shuffled.png"
+        loading="lazy" alt="Sketch of netsmooth algorithm" width="800" />
+      <figcaption>
+        The netSmooth algorithm works well - but only with real gene-gene networks
+      </figcaption>
+    </figure>
+
+    <p>While netSmooth was developed with single cell RNA sequencing in mind, it also works well on other omics data types. For instance, it <b>further improves patient survival prediction</b> (using maui) when applied to sparse mutation data.</p>
+    <figure class="center" style="width: 50%;">
+      <img src="img/netsmooth-maui.png"
+        loading="lazy" alt="netSmooth improves patient survival prediction" />
+      <figcaption>
+        netSmooth, when used on sparse mutation data, improves patient survival prediction accuracy
+      </figcaption>
+    </figure>
+
+    <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5814748.3/">Read the paper</a>
+
+
+    <h3 id="political-science">Political Science</h3>
+    <p>My political science research has focused on political participation on social media.</p>
+
+    <h4>Social Networks and Protest Participation: Evidence from 130 Million Twitter Users</h4>
     <p>
-      Berlin-based machine learning researcher and data scientist with 10+ years of experience in software engineering, computational social science, biomedical research and AI. Founder and CTO at <a href="https://arcas.ai/">Arcas</a> This is my personal website.
+      I collected a <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/RLLL1V">dataset</a> representing the social network of twitter users who attended the 2015 Charlie Hebdo protest in Paris, as well as two plausible control sets (twitter users who had shown interest in the march but did not attend, as well as french twitter users in general).
     </p>
-  </div>
+    <p>
+      Together with my collaborators at NYU, I analyzed the large scale network, <b>providing the first ever empirical evidence for social protest theory</b>. The study was awarded the <b>American Journal of Political Science's Best Article of 2019</b>.<!--  and the 2020 American Political Science Association's Best Article in Information Technology and Politics award as well as the 2020 Political Ties Award. -->
+    </p>
+    
+    <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12436">Read the paper</a>
 
-  <nav role="navigation" class="toc">
-    <!-- <h2>Contents</h2> -->
-    <ol>
+    <h4>Political Knowledge and Misinformation in the Era of Social Media: Evidence from the 2015 U.K. Election</h4>
+    <p>
+      In collaboration with YouGov, my co-authors and I collected information about voters' knowledge of political hot topics, using a panel survey design. We also used the survey respondents' twitter data to see their exposure to tweets by news media and political figures.
+    </p>
+    <p>
+      Using this design, we were able to see how voters' knowledge on political issues changed during the election campaign, and show that <b>while twitter use generally leads to increased knowledge about political issues, exposure to messages from political parties shifts voters' knowledge from the truth in a direction that benefits the parties' political agendas.</b>
+    </p>
+
+    <!-- <a href="">Read the paper</a> --> <span class="muted">Forthcoming in the British Journal of Political Science.</span>
+
+    <h3 id="production-optimization">Production optimization</h3>
+    <p>
+      <a href="https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/260248">My M.Sc. thesis</a> in Control Engineering tackled the problem of optimal production of oil from large gas-cap reservoirs under the gas coning phenomenon. This phenomenon happens when the gas-oil interface drifts towards the well in reservoirs with a thin layer of oil under a large gas cap. It was written under joint supervision with a co-advisor from Statoil (the Norwegian state petroleum giant).
+    </p>
+    <figure class="center" style="width: 67%;">
+      <img src="img/goc.png"
+        loading="lazy" alt="The gas coning phenomenon in large gas cap reservoirs" />
+      <figcaption>
+        The gas coning phenomenon in large gas cap reservoirs
+      </figcaption>
+    </figure>
+
+    <p>
+      Other than potentially saving Statoil a few millions of dollars on oil production from the Troll A field<sup><a href="#fn1" id="ref1">1</a></sup>, this thesis has received several citations in the petroleum litterature for proving the stability of the PDE model of the gas-oil (or gas-water) interface, under a positive flow assumption (for the math inclinded, it's on page 19 of the thesis).
+    </p>
+    
+
+    <h2 id="open-source-software">Open source software</h2>
+    <h3 id="maui"><em>maui</em> -  Multiomics autoencoder integration</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/hex-maui.png" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>Multi-omics Autoencoder Integration (maui) is a python package for multi-omics data analysis. It is based on a bayesian latent factor model, with inference done using artificial neural networks.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><a href="https://github.com/BIMSBbioinfo/maui">https://github.com/BIMSBbioinfo/maui</a></p>
+
+    <h3 id="netsmooth"><em>netSmooth</em> - Network smoothing for omics data denoising</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/hex-netsmooth.png" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>netSmooth is an R package for network smoothing of single cell RNA sequencing data. Using gene interaction networks such as protein- protein interactions as priors for gene co-expression, netsmooth improves cell type identification from noisy, sparse scRNA-seq data. The smoothing method is suitable for other gene-based omics data sets such as proteomics, copy-number variation, etc.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><a href="https://github.com/BIMSBbioinfo/netSmooth">https://github.com/BIMSBbioinfo/netSmooth</a></p>
+
+    <h3 id="pigx"><em>PiGx</em> - Reproducible pipelines in genomics using GNU Guix</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/pigx.svg" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>PiGx is a collection of genomics pipelines. All pipelines are easily configured with a simple sample sheet and a descriptive settings file. The result is a set of comprehensive, interactive HTML reports with interesting findings about your samples.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><a href="https://github.com/BIMSBbioinfo/netSmoothhttp://bioinformatics.mdc-berlin.de/pigx/">http://bioinformatics.mdc-berlin.de/pigx/</a></p>
+
+    <h3 id="more-software">More software</h3>
+    <p>Check out <a href="https://github.com/jonathanronen">my github profile</a>!</p>
+
+    <h2 id="selected-publications">Selected publications</h2>
+    <h4>Peer-reviewed articles</h4>
+    <ul>
+      <li>Evaluation of colorectal cancer subtypes and cell lines using deep learning. <a href="https://www.life-science-alliance.org/content/2/6/e201900517.abstract">Life science alliance, 2(6), 2019</a></li>
+      <li>netSmooth: Network-smoothing based imputation for single cell RNA-seq. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5814748.3/">F1000Research, 7, 2018</a></li>
+      <li>Social networks and protest participation: Evidence from 130 million Twitter users. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12436">American Journal of Political Science, 63(3), pp.690-705, 2019</a></li>
+      <li>PiGx: reproducible genomics analysis pipelines with GNU Guix. <a href="https://academic.oup.com/gigascience/article/7/12/giy123/5114263">Gigascience, 7(12), p.giy123, 2018</a></li>
+      <li>Functional interplay of Epstein-Barr virus oncoproteins in a mouse model of B cell lymphomagenesis. <a href="https://www.pnas.org/content/117/25/14421.short">Proceedings of the National Academy of Sciences, 2020</a></li>
+      <li><a href=""></a>Munger, K., Egan, P., Nagler, J., Ronen, J. and Tucker, J.A., 2016. Learning (and unlearning) from the media and political parties: Evidence from the 2015 UK election. Forthcoming in BJPS.</li>
+    </ul>
+
+    <h4>Book chapters</h4>
+    <ul>
       <li>
-        <a href="#research">Research</a>
-        <ol>
-          <li><a href="#genomics">Genomics</a></li>
-          <li><a href="#political-science">Political science</a></li>
-          <li><a href="#production-optimization">Production optimization</a></li>
-        </ol>
+        <em>Multi-omics analysis</em>, chapter in <a href="https://compgenomr.github.io/book/">Computational Genomics with R</a>, Altuna Akalin, 2020.
       </li>
-      <li>
-        <a href="#open-source-software">Open source software</a>
-      </li>
-      <li><a href="#selected-publications">Selected publications</a></li>
-      <li><a href="#side-projects">Side projects</a></li>
-      <li><a href="#freelance">Freelance</a></li>
-    </ol>
-  </nav>
+    </ul>
 
-  <main>
-    <article>
-      <h2 id="research">Research</h2>
-      <h3 id="genomics">Genomics</h3>
-      <p>My research in genomics has focused on methods development to accelerate translation of high end genomics platforms from the lab to the clinic.</p>
+    <h3 id="more-software">More publications</h3>
+    <p>Check out <a href="https://scholar.google.de/citations?user=kUfwhMEAAAAJ">my google scholar profile</a></p>
 
-      <h4 id="research-maui">A novel neural network architecture for multi-modal data integration</h4>
-      <p>I developed a novel Stacked Variational Autoencoder called <em>maui</em> to integrate data from different omics experiments, and used it to get <b>state of the art results in cancer sub-typing and patient survival prediction</b>.</p>
-      <figure class="center">
-        <img src="img/svae.png"
-          loading="lazy" alt="Schematic of stacked variational autoencoder" width="800" />
-        <figcaption>
-          Schematic of a stacked Variational Autoencoder (<em>maui</em>)
-        </figcaption>
-      </figure>
-      <figure class="center">
-        <img src="img/mauiplots.png"
-          loading="lazy" alt="Maui achieves state of the art performance on cancer subtyping and patient survival prediction" width="800" />
-        <figcaption>
-          maui achieves state of the art performance on cancer subtyping and patient survival prediction
-        </figcaption>
-      </figure>
-      <a href="https://www.life-science-alliance.org/content/2/6/e201900517">Read the paper</a>
+    <h2 id="side-projects">Side projects</h2>
+    <p>Some side-projects I've worked on. A little bit of political activism, and some whimsy.</p>
 
-      <h4 id="research-netsmooth">Using gene networks to increase the signal-to-noise ratio in noisy experiments</h4>
-      <p>I used a random walks process on a protein-protein interaction network to <em>smooth</em> noisy data coming from single cell RNA sequencing experiments. The method is an alternative to commonly used <em>imputation</em> methods, which tend to introduce many artificial artifacts in the data.</p>
-      <figure class="center" style="width: 67%;">
-        <img src="img/netsmooth.png"
-          loading="lazy" alt="Sketch of netsmooth algorithm" />
-        <figcaption>
-          The netSmooth algorithm
-        </figcaption>
-      </figure>
-      
-      <p>The netSmooth method <b>improves identifiability of cell types from single cell RNA sequencing</b>, but only when using real gene-gene networks (i.e. this is not a random result obtained by a lucky shuffle of the data)</p>
-      <figure class="center" style="width: 80%;">
-        <img src="img/blood_shuffled.png"
-          loading="lazy" alt="Sketch of netsmooth algorithm" width="800" />
-        <figcaption>
-          The netSmooth algorithm works well - but only with real gene-gene networks
-        </figcaption>
-      </figure>
+    <h3 id="lahadam"><em>www.lahadam.co.il</em> - להד"ם - Neverland</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/lahadam.png" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>www.lahadam.co.il was a website that kept track of Israeli politician's edits and deletes on facebook, and showed the diffs. It was retired after the cat-and-mouse game with facebook, who did not think this was a legitimate use of their API, became too tiresome. Got a few thousands hits per day in the campaign period of the 2015 elections, and my wife and I went on Israeli national TV to talk about some of the worst edits.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <h3 id="holderdeord"><em>www.holderdeord.no</em> - Are they keeping their word?</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/hdo.png" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>www.holderdeord.no was a Norwegian political watchdog. It downloaded role-call votes from the Notwegian parliament's API, and compared them with political parties' manifesto pledges. I did some web development and data work as part of a large team of volunteers. The project got some national attention in the 2013 election campaign and has gathered over $50k in donations over the years. It was retired in 2020 when most of the original team didn't have time to maintain it any longer.</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
 
-      <p>While netSmooth was developed with single cell RNA sequencing in mind, it also works well on other omics data types. For instance, it <b>further improves patient survival prediction</b> (using maui) when applied to sparse mutation data.</p>
-      <figure class="center" style="width: 50%;">
-        <img src="img/netsmooth-maui.png"
-          loading="lazy" alt="netSmooth improves patient survival prediction" />
-        <figcaption>
-          netSmooth, when used on sparse mutation data, improves patient survival prediction accuracy
-        </figcaption>
-      </figure>
+    <h3 id="seinfeldvision"><em>Seinfeldvision</em> - GPT-2 fine-tuned on Seinfeld scripts</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/seinfeld.jpeg" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>I fine-tuned a GPT-2 language model (yes, <a href="https://openai.com/blog/better-language-models/">that one</a>) on Seinfeld scripts. Then, I wrapped it a <a href="https://runwayml.com/">runway</a> model, to make it easily accessible to non-programmers. Turns out GPT-2 (the 345M parameter version) is very good at producing seinfeld-esque dialogue, in spite of its other shortcomings!</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><a href="https://github.com/jonathanronen/seinfeldvision">Get the model</a></p>
 
-      <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5814748.3/">Read the paper</a>
+    <h3 id="seinfeldvision"><em>Retirement calculater</em> - How soon can you retire?</h3>
+    <table style="border: none;">
+      <tbody>
+        <tr>
+          <td class="td-hexicon">
+            <img src="img/ttr.png" style="width: 100%;"/>
+          </td>
+          <td class="td-desc">
+            <p>Ever wonder how soon you can retire and live off the returns on your savings?</p>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p><a href="time-to-retirement.html">Play with the calculator</a></p>
 
 
-      <h3 id="political-science">Political Science</h3>
-      <p>My political science research has focused on political participation on social media.</p>
+    <h2 id="freelance">Freelance</h2>
+    <p>I have been freelancing as a data scientist and applied machine learning practitioner since 2012. Some of my high profile clients include:</p>
+    <div class="imrow">
+      <div class="imcolumn"><img src="img/nyu.png"/></div>
+      <div class="imcolumn"><img src="img/bih-logo.png"/></div>
+      <div class="imcolumn"><img src="img/Logo_of_Stanford_University.png"/></div>
+      <div class="imcolumn"><img src="img/hertie-logo.jpg"/></div>
+      <div class="imcolumn"><img src="img/ANES_logo-07172019.png"/></div>
+    </div>
 
-      <h4>Social Networks and Protest Participation: Evidence from 130 Million Twitter Users</h4>
-      <p>
-        I collected a <a href="https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/RLLL1V">dataset</a> representing the social network of twitter users who attended the 2015 Charlie Hebdo protest in Paris, as well as two plausible control sets (twitter users who had shown interest in the march but did not attend, as well as french twitter users in general).
+    <p>To have a chat, shoot me an e-mail at yona [at] jonathanronen.com</p>
+
+    <div class="footnotes">
+      <p id="fn1">
+        1. I don't know if they implemented it in the end; I chose not to pursue a career in petroleum for environmental reasons. <a href="#ref1" title="Jump back to footnote 1 in the text.">&#8617;</a>
       </p>
-      <p>
-        Together with my collaborators at NYU, I analyzed the large scale network, <b>providing the first ever empirical evidence for social protest theory</b>. The study was awarded the <b>American Journal of Political Science's Best Article of 2019</b>.<!--  and the 2020 American Political Science Association's Best Article in Information Technology and Politics award as well as the 2020 Political Ties Award. -->
-      </p>
-      
-      <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12436">Read the paper</a>
+    </div>
 
-      <h4>Political Knowledge and Misinformation in the Era of Social Media: Evidence from the 2015 U.K. Election</h4>
-      <p>
-        In collaboration with YouGov, my co-authors and I collected information about voters' knowledge of political hot topics, using a panel survey design. We also used the survey respondents' twitter data to see their exposure to tweets by news media and political figures.
-      </p>
-      <p>
-        Using this design, we were able to see how voters' knowledge on political issues changed during the election campaign, and show that <b>while twitter use generally leads to increased knowledge about political issues, exposure to messages from political parties shifts voters' knowledge from the truth in a direction that benefits the parties' political agendas.</b>
-      </p>
-
-      <!-- <a href="">Read the paper</a> --> <span class="muted">Forthcoming in the British Journal of Political Science.</span>
-
-      <h3 id="production-optimization">Production optimization</h3>
-      <p>
-        <a href="https://ntnuopen.ntnu.no/ntnu-xmlui/handle/11250/260248">My M.Sc. thesis</a> in Control Engineering tackled the problem of optimal production of oil from large gas-cap reservoirs under the gas coning phenomenon. This phenomenon happens when the gas-oil interface drifts towards the well in reservoirs with a thin layer of oil under a large gas cap. It was written under joint supervision with a co-advisor from Statoil (the Norwegian state petroleum giant).
-      </p>
-      <figure class="center" style="width: 67%;">
-        <img src="img/goc.png"
-          loading="lazy" alt="The gas coning phenomenon in large gas cap reservoirs" />
-        <figcaption>
-          The gas coning phenomenon in large gas cap reservoirs
-        </figcaption>
-      </figure>
-
-      <p>
-        Other than potentially saving Statoil a few millions of dollars on oil production from the Troll A field<sup><a href="#fn1" id="ref1">1</a></sup>, this thesis has received several citations in the petroleum litterature for proving the stability of the PDE model of the gas-oil (or gas-water) interface, under a positive flow assumption (for the math inclinded, it's on page 19 of the thesis).
-      </p>
-      
-
-      <h2 id="open-source-software">Open source software</h2>
-      <h3 id="maui"><em>maui</em> -  Multiomics autoencoder integration</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/hex-maui.png" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>Multi-omics Autoencoder Integration (maui) is a python package for multi-omics data analysis. It is based on a bayesian latent factor model, with inference done using artificial neural networks.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p><a href="https://github.com/BIMSBbioinfo/maui">https://github.com/BIMSBbioinfo/maui</a></p>
-
-      <h3 id="netsmooth"><em>netSmooth</em> - Network smoothing for omics data denoising</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/hex-netsmooth.png" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>netSmooth is an R package for network smoothing of single cell RNA sequencing data. Using gene interaction networks such as protein- protein interactions as priors for gene co-expression, netsmooth improves cell type identification from noisy, sparse scRNA-seq data. The smoothing method is suitable for other gene-based omics data sets such as proteomics, copy-number variation, etc.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p><a href="https://github.com/BIMSBbioinfo/netSmooth">https://github.com/BIMSBbioinfo/netSmooth</a></p>
-
-      <h3 id="pigx"><em>PiGx</em> - Reproducible pipelines in genomics using GNU Guix</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/pigx.svg" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>PiGx is a collection of genomics pipelines. All pipelines are easily configured with a simple sample sheet and a descriptive settings file. The result is a set of comprehensive, interactive HTML reports with interesting findings about your samples.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p><a href="https://github.com/BIMSBbioinfo/netSmoothhttp://bioinformatics.mdc-berlin.de/pigx/">http://bioinformatics.mdc-berlin.de/pigx/</a></p>
-
-      <h3 id="more-software">More software</h3>
-      <p>Check out <a href="https://github.com/jonathanronen">my github profile</a>!</p>
-
-      <h2 id="selected-publications">Selected publications</h2>
-      <h4>Peer-reviewed articles</h4>
-      <ul>
-        <li>Evaluation of colorectal cancer subtypes and cell lines using deep learning. <a href="https://www.life-science-alliance.org/content/2/6/e201900517.abstract">Life science alliance, 2(6), 2019</a></li>
-        <li>netSmooth: Network-smoothing based imputation for single cell RNA-seq. <a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5814748.3/">F1000Research, 7, 2018</a></li>
-        <li>Social networks and protest participation: Evidence from 130 million Twitter users. <a href="https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12436">American Journal of Political Science, 63(3), pp.690-705, 2019</a></li>
-        <li>PiGx: reproducible genomics analysis pipelines with GNU Guix. <a href="https://academic.oup.com/gigascience/article/7/12/giy123/5114263">Gigascience, 7(12), p.giy123, 2018</a></li>
-        <li>Functional interplay of Epstein-Barr virus oncoproteins in a mouse model of B cell lymphomagenesis. <a href="https://www.pnas.org/content/117/25/14421.short">Proceedings of the National Academy of Sciences, 2020</a></li>
-        <li><a href=""></a>Munger, K., Egan, P., Nagler, J., Ronen, J. and Tucker, J.A., 2016. Learning (and unlearning) from the media and political parties: Evidence from the 2015 UK election. Forthcoming in BJPS.</li>
-      </ul>
-
-      <h4>Book chapters</h4>
-      <ul>
-        <li>
-          <em>Multi-omics analysis</em>, chapter in <a href="https://compgenomr.github.io/book/">Computational Genomics with R</a>, Altuna Akalin, 2020.
-        </li>
-      </ul>
-
-      <h3 id="more-software">More publications</h3>
-      <p>Check out <a href="https://scholar.google.de/citations?user=kUfwhMEAAAAJ">my google scholar profile</a></p>
-
-      <h2 id="side-projects">Side projects</h2>
-      <p>Some side-projects I've worked on. A little bit of political activism, and some whimsy.</p>
-
-      <h3 id="lahadam"><em>www.lahadam.co.il</em> - להד"ם - Neverland</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/lahadam.png" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>www.lahadam.co.il was a website that kept track of Israeli politician's edits and deletes on facebook, and showed the diffs. It was retired after the cat-and-mouse game with facebook, who did not think this was a legitimate use of their API, became too tiresome. Got a few thousands hits per day in the campaign period of the 2015 elections, and my wife and I went on Israeli national TV to talk about some of the worst edits.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      
-      <h3 id="holderdeord"><em>www.holderdeord.no</em> - Are they keeping their word?</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/hdo.png" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>www.holderdeord.no was a Norwegian political watchdog. It downloaded role-call votes from the Notwegian parliament's API, and compared them with political parties' manifesto pledges. I did some web development and data work as part of a large team of volunteers. The project got some national attention in the 2013 election campaign and has gathered over $50k in donations over the years. It was retired in 2020 when most of the original team didn't have time to maintain it any longer.</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-
-      <h3 id="seinfeldvision"><em>Seinfeldvision</em> - GPT-2 fine-tuned on Seinfeld scripts</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/seinfeld.jpeg" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>I fine-tuned a GPT-2 language model (yes, <a href="https://openai.com/blog/better-language-models/">that one</a>) on Seinfeld scripts. Then, I wrapped it a <a href="https://runwayml.com/">runway</a> model, to make it easily accessible to non-programmers. Turns out GPT-2 (the 345M parameter version) is very good at producing seinfeld-esque dialogue, in spite of its other shortcomings!</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p><a href="https://github.com/jonathanronen/seinfeldvision">Get the model</a></p>
-
-      <h3 id="seinfeldvision"><em>Retirement calculater</em> - How soon can you retire?</h3>
-      <table style="border: none;">
-        <tbody>
-          <tr>
-            <td class="td-hexicon">
-              <img src="img/ttr.png" style="width: 100%;"/>
-            </td>
-            <td class="td-desc">
-              <p>Ever wonder how soon you can retire and live off the returns on your savings?</p>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-      <p><a href="time-to-retirement.html">Play with the calculator</a></p>
-
-
-      <h2 id="freelance">Freelance</h2>
-      <p>I have been freelancing as a data scientist and applied machine learning practitioner since 2012. Some of my high profile clients include:</p>
-      <div class="imrow">
-        <div class="imcolumn"><img src="img/nyu.png"/></div>
-        <div class="imcolumn"><img src="img/bih-logo.png"/></div>
-        <div class="imcolumn"><img src="img/Logo_of_Stanford_University.png"/></div>
-        <div class="imcolumn"><img src="img/hertie-logo.jpg"/></div>
-        <div class="imcolumn"><img src="img/ANES_logo-07172019.png"/></div>
-      </div>
-
-      <p>To have a chat, shoot me an e-mail at yona [at] jonathanronen.com</p>
-
-      <div class="footnotes">
-        <p id="fn1">
-          1. I don't know if they implemented it in the end; I chose not to pursue a career in petroleum for environmental reasons. <a href="#ref1" title="Jump back to footnote 1 in the text.">&#8617;</a>
-        </p>
-      </div>
-
-    </article>
-  </main>
-
-  <hr/>
-  <div class="footer">
-    &copy; Jonathan Ronen, 2020 | <a href="https://latex.now.sh/"><span class="latex">L<span>a</span>T<span>e</span>X</span>.css</a> by Vincent Dörig
-  </div>
-
-<!--   <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'],],
-      },
-    };
-  </script>
-  <script id="MathJax-script" async src="es5/tex-mml-chtml.js"></script> -->
-
-</body>
-
-</html>
+  </article>
+</main>
