@@ -1,0 +1,213 @@
+---
+title: Confounders
+layout: default
+---
+
+<header>
+  <h1>Confounders</h1>
+  <p class="author">Jonathan Ronen</p>
+  <p class="author">{{ page.date | date_to_string }}</p>
+</header>
+
+<nav role="navigation" class="toc">
+  <!-- <h2>Contents</h2> -->
+  <ol>
+    <li>
+      <a href="#intro">Introduction</a>
+      <ol>
+        <li><a href="#rct">Randomized Controlled Trials</a></li>
+      </ol>
+    </li>
+    <li>
+      <a href="#causal">Using causal models to identify confounders</a>
+      <ol>
+        <li><a href="#explicit">The explicit causal model</a></li>
+        <li><a href="#spotting-independence">Spotting (in)dependence in the causal model</a></li>
+        <li><a href="#backdoor">The backdoor criterion</a></li>
+      </ol>
+    </li>
+    <li><a href="#examples">Try it yourself</a></li>
+    <li><a href="#the-end">The end</a></li>
+  </ol>
+</nav>
+<main>
+    <article>
+        <h2 id="intro">Introduction</h2>
+
+        <p>Confounders are behind some so-called "spurious correlations", or those correlations that we've all been taught from statistics education infancy "do not imply causation". Certainly some spurious correlations are truly <em>spurious</em>, as in, purely coincidental. <a href="https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/41695.pdf">Google Correlate</a> was a fun place to find some of those. But in science, a bigger problem is the not-really-<em>spurious</em> "spurious correlations" which appear in data due to confounders.</p>
+
+        <p>Here's an exmaple due to William Burns: The number of fire trucks at a fire correlates with the amount of damage at that same fire. The correlation of course doesn't imply that the fire engines are the <em>cause</em> for the damage (nor that the damage produces fire trucks). There is a confounder at play, <em>the severity of the fire</em>, which <em>causes</em> both the number of fire engines, and the damage. As a personal note, I don't think it's a <em>spurious</em> correlation (on linguistic merit), but this is the kind of correlation scientists call spurious - ones that aren't due to direct causation.</p>
+
+        <p>So these confounders make it difficult to assess the relationship between two variables; it might make you think one exists where one does not. To get around these, statisticians "control for" confounding variables. In the example above, if we split the fires into groups of similarly severe fires, within each group, no positive correlation between the number of fire trucks and damage would appear - in fact, quite possibly the opposite would become apparent, that sending more fire engines leads to <em>less</em> damage (anticorrelation). This might even be a causal link.</p>
+
+        <p>So when trying to figure out if a correlation is spurious or meaningful (perhaps even causal), the problem we're facing is that of identifying confounders, measuring them, and controlling for them.</p>
+
+        <h3 id="rct">Randomized Controlled Trials</h3>
+        <p>In many real-world cases, even the first task, identifying confounders, is impossible. We simply don't know all the variables that might affect both of our measures. We don't know all the causes for fire damage and which of those might also affect the number of fire engines present; we certainly don't know all the factors which affect a person's predisposition to develop a disease, or respond to a certain drug! The medical research community is usually interested in finding causal links between treatments and responses (e.g. does a drug work?), and has settled on a solution for the spurious correlations problem: the Randomized Controlled Trial. The problem of course is deciding whether a certain therapy is effective against a certain disease, i.e. is taking the drug correlated with getting better, and if so, is this a spurious correlation? Because there may be confounders causing both the disease and the response to the therapy. For instance, what if there's some selection bias in who takes the drug, that is, what if men are more likely to take the drug than women, and it also happens to work better for men? It could be worse - what if doctors only perscribe the drug to patients who are more likely to survive anyway?</p>
+
+        <p>The solution, due to one of the fathers of modern statistics, Ronald Fisher, is simple: if you don't know all the possible factors which affect the outcome (response to therapy), and thus you cannot control for them when administering the treatment, you should <em>randomize</em> your treatment! That way, *on average*, you will control for all possible confounders. And Fisher went on to develop the statistical tools to estimate just how much uncertainty you have in each experiment, since they are only guaranteed to work perfectly on average.</p>
+
+        <h2 id="causal">Using causal models to identify confounders</h2>
+
+        <p>Randomized trials are great when all of the confounders can't be identified <em>and</em> the experimenter can assign the treatment. However, often we deal with so-called observational data, when an experimenter can observe some data points, but may not assign treatments, e.g. for ethical or practical reasons. In this scenario, a very common thing researchers do, is treat anything you can measure as a potential confounder, and control for <em>everything</em>. An only slightly more clever variant of this is to measure the correlation between all the variables, and *control for all the correlated variables*. But I recently learned of a more elegant way of de-confounding data, which also works on observational data. The crux of the problem is, this requires an explicit causal model between all relevant variables. The flip-side is, it's always a good idea to make your causal assumptions about the system you're studying explicit anyway!</p>
+
+        <p>This method is due to Judea Pearl<sup><a href="#fn1" id="ref1">1</a></sup> in 1995, and I'll illustrate it with a couple of examples from Clarice Weinberg, who first published them in 1993<sup><a href="#fn2" id="ref2">2</a></sup>, and later revisited them using Pearl's methodology as well<sup><a href="#fn3" id="ref3">3</a></sup>.</p>
+
+        <h3 id="explicit">The explicit causal model</h3>
+
+        <p>First off, sketch a graph which makes explicit your assumptions about what causes what. This is the hard part. For the fire truck example above, the causal diagram might look like this:</p>
+
+        <figure class="center">
+            <img src="/img/blog/confounders/fig1.png" loading="lazy" alt="Causal model" width="800" />
+            <figcaption>
+                Causal diagram showing SEVERITY as a confounder (common cause) of both TRUCKS and DAMAGE.
+            </figcaption>
+        </figure>
+
+        <p>This is what a typical confounder looks like - it causally precedes both variables which it confounds. Looking at this causal diagram, we can see that DAMAGE and TRUCKS are confounded by the severity of the fire. If we control for the severity of the fire then, the number of trucks and the amount of damage should be <em>independent</em>, i.e. not correlated.</p>
+
+        <p>If on the other hand we suspect that the presence of more trucks might actually affect the damage, we could draw the following diagram:</p>
+
+        <figure class="center">
+            <img src="/img/blog/confounders/fig2.png" loading="lazy" alt="Causal model" width="800" />
+            <figcaption>
+                Causal diagram showing SEVERITY as a confounder (common cause) of both TRUCKS and DAMAGE. However, this diagram also allows trucks to cause damage via a direct link.
+            </figcaption>
+        </figure>
+
+        <p>What this diagram shows you is that, if you'd like to quantify the effect trucks have on damage, you need to control for severity, because it is a confounder. But in this analysis, we don't expect trucks and damage to be independent, because there is an arrow between them; we do however see that they are confounded by severity, and so severity needs to be controlled for before we compute any correlations. Otherwise, we'll never know if the correlation we find is only due to severity, or due to an actual effect of trucks on damage (which might even be a reversal in the direction of the correlation, if more trucks lead to a quicker response and thus to less damage!).</p>
+
+        <h3 id="spotting-independence">Spotting (in)dependence in the causal model</h3>
+
+        <p>There are simple tricks that can help you decide, for each triplet in a causal diagram, if there is a confounder at play, or how to know which variables should be independent.</p>
+
+        <h4>Chains</h4>
+
+        <p>The simplest triplet looks like this:</p>
+
+        <kbd>A -> B -> C</kbd>
+
+        <p>In this case, we expect A to have an effect on C, but only through B. B is called a "mediator". There is no confounding at play here; C is dependent on A via B. If we control for B, we end up severing the causal chain between A and C, which makes A and C independent. If we wish to examine the strength of the relationship between A and C, controlling for B would be disastrous, as it would render them independent.</p>
+
+        <h4>Forks</h4>
+
+        <kbd>A <- B -> C</kbd>
+
+        <p>This is the classic confounding variable case. B confounds A and C. If we'd like to examine the relationship between A and C, we would first need to control for B, otherwise we're really measuring the effects of B on A and C. As this diagram stands, A and C are not independent. Controlling for B makes them so.</p>
+
+        <h4>Colliders</h4>
+
+        <p>Colliders are the opposite of a fork:</p>
+
+        <kbd>A -> B <- C</kbd>
+
+        <p>Here, both A and C affect B. As the diagram stands, A and C are independent. If we wanted to quantify the relationship between A and C, should we then control for B? The answer is a resounding <em>no</em>. In fact, controlling for B here will make A and C dependent! This is called the <a href="https://en.wikipedia.org/wiki/Interaction_information#Example_of_positive_interaction_information">"explain away"</a> effect, or the "why are the pretty ones so dumb?" effect. Imagine that A stands for a person's physical attractiveness, and C for their intelligence. B is the likelihood you'll be talking to them. This is because in this model, you are likely to strike a conversation with a person if they are pretty, and you're also likely to strike up a conversation with a person if they're smart; either on its own will compel you to talk to them. A-priori, let's assume intelligence and looks are independent (no arrow between A and C, and no confounder either). But what happens when we control for B? That is, when we only look at your conversation partners? Well, then what happens is that A and C become anti-correlated! That is, if a person you're talking to is good looking, they are more likely to be dumb. Because their good looks "explain away" how come you're talking to them. Yeah, it's a thinker... But think about the other group too - the people you're <em>not</em> talking too. According to this model, they are more likely to be both dumb AND unattractive (spurious correlation) than the general population (no correlation). Controlling for a collider makes its (independent) causes <em>conditionally</em> dependent.</p>
+
+        <h4>Proxies - partial deconfounding</h4>
+
+        <p>Consider the following:</p>
+
+        <figure class="center">
+            <img src="/img/blog/confounders/proxy.png" loading="lazy" alt="Causal model" />
+        </figure>
+
+        <p>In this example, A causes D via B. And B also causes C. This scenario is common enough if the mediator (B) is not directly measurable, but some side-effect of B, say, C, is measurable. Then C is called a "proxy" for B. Should C be controlled for when assessing relationships between A and D? The answer is that controlling for C, being a proxy for B, is in effect a "partial" control for B. And we already know we don't want to control for the mediator B.</p>
+
+        <h3 id="backdoor">The backdoor criterion</h3>
+
+        <p>Now to the best part - how can we use all that to know when we have confounding? and which variables should we control for when assessing relationships between treatment and response? The answer is the <em>backdoor criterion</em>, from Pearl's paper. A backdoor path is any path between response (C) and treatment (A), which goes <em>into</em> A, i.e. any path <kbd>A <- .... C</kbd>. For instance, <kbd>A <- B -> C</kbd> (a fork) is a backdoor path from C to A. Also, <kbd>A <- B -> D -> C</kbd> is a backdoor path. In either case, we should control for B (or either B or D or both), before testing A's effect on C.</p>
+
+        <p>In order to de-confound two variables A and C, the backdoor path needs to be broken, i.e. there needs to be independence between two variables <em>somewhere</em> on that path. For instance, <kbd>A <- B -> D <- E -> C</kbd> is already a broken path, because the collider D makes B and E independent. In fact, controlling for D here would <em>open</em> a backdoor path and render the analysis confounded.</p>
+
+        <h2 id="examples">Try for yourself</h2>
+
+        <p>So the game of deciding which variables to control for is the game of finding backdoor paths leading from response to treatment (ending in the non-causal direction, into A, <kbd>A <-</kbd>), and controlling for some variables in that path which breaks the chain of dependence.</p>
+
+        <p>The following examples, from Clarice Weinberg's paper, are a fun way to practice this. The original examples in the paper are a bit macabre, so I've modified the meanings of the variables here, based on a famous spurious correlation<sup><a href="#fn4" id="ref4">4</a></sup>. The causal diagrams are the same, though.</p>
+
+
+        <h3>Example 1</h3>
+
+        <figure class="center">
+            <img src="/img/blog/confounders/game1.png" loading="lazy" alt="Causal model" />
+        </figure>
+
+        In this example E is some exposure (say, eating chocolate), A is an underlying effect that the exposure leads to (e.g. cognitive function). S1 is winning your first nobel prize, and S2 is winning a second one. We want to know if eating chocolate (E) is associated with winning a second nobel prize (S2).
+
+        Should anything be controlled for when trying to assess the effect of the exposure (E) on the second nobel prize (S2)? Moreover, let's assume that cognitive function (A) is not directly measurable. So the question boils down to: should we control for S1 when assessing the relationship between E and S2?
+
+        <details>
+            <summary>Show solution...</summary>
+            <h4>Solution to example 1</h4>
+            <p>Many biomedical researchers will be fooled by this example if they don't look at a causal diagram like this one. The reason is that S2 and S1 are obviously correlated, and without the causal analysis, researchers are often confused as to whether a third correlated variable should be controlled for or not. As we learned above, controlling for S1 actually partially controls for A, which partially blocks the effect of E on S2, leading to biased conclusions. The conclusion is one should <em>not</em> control for earlier nobel prizes when assessing the effect of a (constant) exposure on the next one.</p>
+        </details>
+
+        <h3>Example 2</h3>
+
+        <figure class="center">
+            <img src="/img/blog/confounders/game2.png" loading="lazy" alt="Causal model" />
+        </figure>
+
+        <p>This is an extension of the situation above, adding U as a cause for both S1 and S2. U stands for an unmeasured factor for winning nobel prizes. What about now, should S1 be controlled for when examining the effect of E on S2?</p>
+
+        <details>
+            <summary>Show solution...</summary>
+            <h4>Solution to example 4</h4>
+
+            <p>Still no. The original point remains, with the addition that now S1 is also a collider <kbd>A -> S1 <- U</kbd>, meaning that while A and U are independent, controlling for S1 would make them conditionally dependent, and introduce another confounding bias!</p>
+        </details>
+
+        <h3>Example 3</h3>
+
+        The previous examples assumed the exposure to be constant, i.e. the same chocolate consumption for both nobel prizes. What if we introduce multiple exposures?
+            
+        <figure class="center">
+            <img src="/img/blog/confounders/game3.png" loading="lazy" alt="Causal model" />
+        </figure>
+
+        <p>This extension of the models above has two separate exposures (E1 and E2), each causing separate cognitive abilities (A1 and A2) which lead to nobel prizes (S1 and S2). It is also assumed that the first exposure (E1) affects the later exposure (E2). For instance, if chocolate is addictive. The unmeasured factor U stands as before. Now should S1 be controlled for when trying to estimate the relationship between E2 and S2?</p>
+
+        <details>
+            <summary>Show solution...</summary>
+            <h4>Solution to example 3</h4>
+
+            <p>There is only one backdoor path from S2 to E2: <kbd>E2 <- E1 -> A1 <- U -> A2 -> S2</kbd>. But this path is already blocked by the collider A1. Controlling for S1 is like partially controlling for A1, which opens up this path, and introduces confounder bias! Unless of course we also control for E1 or U, which would break the backdoor path again.</p>
+        </details>
+
+        <h3>Example 4</h3>
+
+        <p>This one is the same as the previous one, with the addition of <kbd>S1 -> E2</kbd>, i.e., the first nobel prize might have a causal effect on the second exposure. For instance, after winning a nobel in chemistry, a chocolate eater might decide to eat even more chocolate. Should S1 be controlled for now, when assessing the relationship between E2 and S2?</p>
+
+        <figure class="center">
+            <img src="/img/blog/confounders/game4.png" loading="lazy" alt="Causal model" />
+        </figure>
+
+        <details>
+            <summary>Show solution...</summary>
+            <h4>Solution to example 4</h4>
+
+            <p>Now there is an open backdoor path, <kbd>E2 <- S1 <- A1 <- U -> A2 -> S2</kbd>. This path is open, i.e. has no colliders in it. So unless we control for something, our estimates of the correlation between E2 and S2 will be biased by some confounding! If U is measurable (say, parents' education level), controling for U will close this path. Controling for S1 will close it too!</p>
+
+            <p>There is a second backdoor path too: <kbd>E2 <- E1 -> A1 <- U -> A2 -> S2</kbd>, but this path is already closed by the collider A1. So even if we could measure A1, and chose to control for it, in order to close the first backdoor path, we would end up opening up this one! So if you control for A1, you'd still need to control for U in order to leave this one closed.</p>
+        </details>
+
+        <h2 id="the-end">The end</h2>
+
+        <p>So there you have it. I hope you found them instructive. Before I was introduced to this method in Judea Pearl's "The book of Why", I, like many of my fellow researchers, resorted to common sense thinking when deciding which variables to control for in my analyses. All too often, I lazily controlled for everything! As the examples above demonstrate, such "common sense" decisions depend on your causal model. <em>Needless to say, any conclusions you draw using a causal model, are dependent on how reasonable your causal assumptions are!</em> Thanks to this method, I now have a principled way to state my causal assumptions, and use them to make better decisions about which variables to control for in my analyses - and so do you!</p>
+
+        <div class="footnotes">
+              <p id="fn1">
+                1. <a href="https://doi.org/10.1093/biomet/82.4.669">Pearl, Judea. "Causal diagrams for empirical research." Biometrika 82.4 (1995): 669-688.</a><a href="#ref1" title="Jump back to footnote 1 in the text.">&#8617;</a>
+              </p>
+              <p id="fn2">
+                2. <a href="https://doi.org/10.1093/oxfordjournals.aje.a116591">Weinberg, Clarice R. "Toward a clearer definition of confounding." American journal of epidemiology 137.1 (1993): 1-8.</a><a href="#ref2" title="Jump back to footnote 2 in the text.">&#8617;</a>
+              </p>
+              <p id="fn3">
+                3. <a href="https://doi.org/10.1093/aje/kws127">Howards, Penelope P., et al. "“Toward a clearer definition of confounding” revisited with directed acyclic graphs." American journal of epidemiology 176.6 (2012): 506-511.</a><a href="#ref3" title="Jump back to footnote 3 in the text.">&#8617;</a>
+              </p>
+              <p id="fn4">
+                4. <a href="https://www.nejm.org/doi/full/10.1056/nejmon1211064">Chocolate consumption linked to Nobel Prize winning</a><a href="#ref4" title="Jump back to footnote 4 in the text.">&#8617;</a>
+              </p>
+        </div>
+    </article>
+</main>
