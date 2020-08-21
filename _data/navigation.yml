@@ -1,0 +1,6 @@
+- name: Home
+  link: /
+- name: TTR
+  link: /time-to-retirement.html
+- name: Blog
+  link: /blog.html
