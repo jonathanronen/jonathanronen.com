@@ -191,6 +191,12 @@ layout: default
             <p>There is a second backdoor path too: <kbd>E2 <- E1 -> A1 <- U -> A2 -> S2</kbd>, but this path is already closed by the collider A1. So even if we could measure A1, and chose to control for it, in order to close the first backdoor path, we would end up opening up this one! So if you control for A1, you'd still need to control for U in order to leave this one closed.</p>
         </details>
 
+        <h2 id="criticism">Criticism</h2>
+
+        <p>In his blog<sup><a href="#fn5" id="ref5">5</a></sup>, Andrew Gelman discussed the merits of this approach, comparing it to the standard imperative to "condition on all pre-treatment variables". Gelman appears to have an issue with colliders, which as explained above, can cause spurious correlations to appear if you control for some variables. He concedes that there <em>might</em> be some situations where different problems with the data cancel each other out, and would be made worse by controlling for only one of them; however he still suggests that the more principled approach is controlling for all pre-treatment variables, and then fix any problems that arise using reasoning.</p>
+
+        <p>I think this stems mostly from Gelman's dislike of graphical causal models. And I think this dislike stems from the reasonable criticism that finding the real causal model is difficult. He is no stranger to causal inference, but favors other methods than Pearl's. I don't think they are even very far apart intellectually (everybody prefers their own, or their teachers' methods over others'). Both methods boil down to stating assumptions in a way that will help you realise if you've made some unreasonable ones. This here was an exposition of Pearl's method; perhaps I'll visit the Rubin-Neyman causal modeling framework<sup><a href="#fn6" id="ref6">6</a></sup> another time.</p>
+
         <h2 id="the-end">The end</h2>
 
         <p>So there you have it. I hope you found them instructive. Before I was introduced to this method in Judea Pearl's "The book of Why", I, like many of my fellow researchers, resorted to common sense thinking when deciding which variables to control for in my analyses. All too often, I lazily controlled for everything! As the examples above demonstrate, such "common sense" decisions depend on your causal model. <em>Needless to say, any conclusions you draw using a causal model, are dependent on how reasonable your causal assumptions are!</em> Thanks to this method, I now have a principled way to state my causal assumptions, and use them to make better decisions about which variables to control for in my analyses - and so do you!</p>
@@ -207,6 +213,12 @@ layout: default
               </p>
               <p id="fn4">
                 4. <a href="https://www.nejm.org/doi/full/10.1056/nejmon1211064">Chocolate consumption linked to Nobel Prize winning</a><a href="#ref4" title="Jump back to footnote 4 in the text.">&#8617;</a>
+              </p>
+              <p id="fn5">
+                5. <a href="https://statmodeling.stat.columbia.edu/2009/07/05/disputes_about/">Andrew Gelman: Resolving disputes between J. Pearl and D. Rubin on causal inference</a><a href="#ref5" title="Jump back to footnote 5 in the text.">&#8617;</a>
+              </p>
+              <p id="fn6">
+                6. <a href="https://en.wikipedia.org/wiki/Rubin_causal_model">Wikipedia: Rubin causal model</a><a href="#ref6" title="Jump back to footnote 6 in the text.">&#8617;</a>
               </p>
         </div>
     </article>
