@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="/css/bootstrap.min.css"/>
+  <link rel="stylesheet" href="/css/style.css"/>
+
+  <!-- Plotly -->
+  <script src="js/plotly-latest.min.js"></script>
+  <style>
+    body {
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      background-color: #f7f7f7;
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    .container {
+      max-width: 960px;
+      margin: 0 auto;
+      background: #fff;
+      padding: 20px 30px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    #controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .column {
+      flex: 1;
+      min-width: 280px;
+      margin: 10px;
+    }
+    .column label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    .column input[type="range"],
+    .column input[type="text"] {
+      width: 100%;
+      margin-top: 5px;
+    }
+    #outputText {
+      background: #fafafa;
+      border: 1px solid #ddd;
+      padding: 10px;
+      white-space: pre-wrap;
+      margin-bottom: 20px;
+    }
+    #chart {
+      width: 100%;
+      height: 500px;
+    }
+  </style>
+
+</head>
+<body>
+  <div class="container">
+    <h1>Buy vs Rent Calculator</h1>
+    <div id="controls">
+      <!-- Column 1 -->
+      <div class="column" id="col1">
+        <label for="purchasingFeesPct">Purchasing fees (%) : <span id="purchasingFeesPctVal"></span></label>
+        <input type="range" id="purchasingFeesPct" min="5" max="15" step="1" value="10">
+
+        <label for="interestRatePct">Interest rate on mortgage (%) : <span id="interestRatePctVal"></span></label>
+        <input type="range" id="interestRatePct" min="2" max="10" step="0.1" value="3.0">
+
+        <label for="initialDownpayRatePct">Initial payment principal return (%) : <span id="initialDownpayRatePctVal"></span></label>
+        <input type="range" id="initialDownpayRatePct" min="0" max="5" step="0.5" value="1.0">
+
+        <label for="propertyAppreciationPct">Property appreciation rate (%) : <span id="propertyAppreciationPctVal"></span></label>
+        <input type="range" id="propertyAppreciationPct" min="0.5" max="10" step="0.5" value="3.0">
+      </div>
+      <!-- Column 2 -->
+      <div class="column" id="col2">
+        <label for="stocksAppreciationPct">Stocks appreciation rate (%) : <span id="stocksAppreciationPctVal"></span></label>
+        <input type="range" id="stocksAppreciationPct" min="0.5" max="10" step="0.5" value="5.0">
+
+        <label for="capitalGainsTaxPct">Capital gains tax on stocks (%) : <span id="capitalGainsTaxPctVal"></span></label>
+        <input type="range" id="capitalGainsTaxPct" min="0" max="100" step="1" value="25">
+
+        <label for="downPayment">Money to invest / down payment ($) : <span id="downPaymentVal"></span></label>
+        <input type="range" id="downPayment" min="0" max="1000000" step="1000" value="180000">
+
+        <label for="rentScenarios">Rent scenarios to compare ($, comma-separated) : </label>
+        <input type="text" id="rentScenarios" value="1000,2000,3000">
+      </div>
+      <!-- Column 3 -->
+      <div class="column" id="col3">
+        <label for="purchasePrice">Apartment purchase price ($) : <span id="purchasePriceVal"></span></label>
+        <input type="range" id="purchasePrice" min="0" max="2000000" step="10000" value="550000">
+
+        <label for="hausgeldEtc">Hausgeld, insurance, etc. ($) : <span id="hausgeldEtcVal"></span></label>
+        <input type="range" id="hausgeldEtc" min="0" max="2000" step="10" value="450">
+
+        <label for="nYears">Time horizon (years) : <span id="nYearsVal"></span></label>
+        <input type="range" id="nYears" min="1" max="30" step="1" value="10">
+      </div>
+    </div>
+    <div id="outputText">
+      <pre id="resultText"></pre>
+    </div>
+    <div id="chart"></div>
+  </div>
+
+  <script>
+    // Helper to update displayed slider values
+    function updateSliderValue(id, value) {
+      document.getElementById(id + 'Val').textContent = value;
+    }
+
+    const sliderIds = [
+      'purchasingFeesPct', 'interestRatePct', 'initialDownpayRatePct', 'propertyAppreciationPct',
+      'stocksAppreciationPct', 'capitalGainsTaxPct', 'downPayment',
+      'purchasePrice', 'hausgeldEtc', 'nYears'
+    ];
+
+    sliderIds.forEach(function(id) {
+      const el = document.getElementById(id);
+      updateSliderValue(id, el.value);
+      el.addEventListener('input', function() {
+        updateSliderValue(id, el.value);
+        calculateAndPlot();
+      });
+    });
+
+    // Also update and recalc on rentScenarios text change
+    document.getElementById('rentScenarios').addEventListener('input', calculateAndPlot);
+
+    function calculateAndPlot() {
+      // Read values from inputs and parse appropriately
+      const PURCHASING_FEES_PCT = parseFloat(document.getElementById('purchasingFeesPct').value);
+      const INTEREST_RATE_PCT = parseFloat(document.getElementById('interestRatePct').value);
+      const INITIAL_DOWNPAY_RATE_PCT = parseFloat(document.getElementById('initialDownpayRatePct').value);
+      const PROPERTY_APPRECIATION_PCT = parseFloat(document.getElementById('propertyAppreciationPct').value);
+
+      const STOCKS_APPRECIATION_PCT = parseFloat(document.getElementById('stocksAppreciationPct').value);
+      const CAPITAL_GAINS_TAX_PCT = parseFloat(document.getElementById('capitalGainsTaxPct').value);
+      const DOWN_PAYMENT = parseFloat(document.getElementById('downPayment').value);
+      const rentScenariosStr = document.getElementById('rentScenarios').value;
+      const rent_scenarios = rentScenariosStr.split(",").map(e => parseInt(e.trim())).filter(e => !isNaN(e));
+
+      const PURCHASE_PRICE = parseFloat(document.getElementById('purchasePrice').value);
+      const HAUSGELD_ETC = parseFloat(document.getElementById('hausgeldEtc').value);
+      const N_YEARS = parseInt(document.getElementById('nYears').value);
+
+      // Mortgage calculations
+      const loan_amt = PURCHASE_PRICE * (1 + PURCHASING_FEES_PCT / 100) - DOWN_PAYMENT;
+      const first_month_principal_payment = loan_amt * (INITIAL_DOWNPAY_RATE_PCT / 100) / 12;
+      const monthly_mortgate_payment = loan_amt * (INTEREST_RATE_PCT / 100) / 12 + first_month_principal_payment;
+
+      // Determine monthly budget: the larger of (mortgage+hausgeld) and the highest rent scenario
+      const monthly_budget = Math.max(monthly_mortgate_payment + HAUSGELD_ETC, Math.max(...rent_scenarios));
+      const monthly_stock_invest_mortgate_scenario = monthly_budget - monthly_mortgate_payment - HAUSGELD_ETC;
+
+      // Arrays for the Buy scenario
+      let debt_t = [loan_amt];
+      let interest_paid_t = [loan_amt * (INTEREST_RATE_PCT / 100) / 12];
+      let principal_paid_t = [monthly_mortgate_payment - interest_paid_t[0]];
+      let saved_in_stocks_t = [monthly_stock_invest_mortgate_scenario];
+      let profits_in_stocks_t = [0];  // non-cumulative, taxed at period end
+      let saved_in_real_estate_t = [PURCHASE_PRICE - loan_amt];
+      let total_assets_t = [PURCHASE_PRICE - loan_amt];
+
+      const totalMonths = 12 * N_YEARS;
+      for (let i = 2; i <= totalMonths; i++) {
+        const lastDebt = debt_t[debt_t.length - 1];
+        const interest_payment = lastDebt * (INTEREST_RATE_PCT / 100) / 12;
+        interest_paid_t.push(interest_payment);
+        const principal_payment = monthly_mortgate_payment - interest_payment;
+        principal_paid_t.push(principal_payment);
+        debt_t.push(lastDebt - principal_payment);
+        const value_of_apartment = PURCHASE_PRICE * Math.pow(1 + PROPERTY_APPRECIATION_PCT / 100 / 12, i);
+        saved_in_real_estate_t.push(value_of_apartment - debt_t[debt_t.length - 1]);
+        const profit_stock = saved_in_stocks_t[saved_in_stocks_t.length - 1] * (STOCKS_APPRECIATION_PCT / 100 / 12);
+        profits_in_stocks_t.push(profit_stock);
+        saved_in_stocks_t.push(saved_in_stocks_t[saved_in_stocks_t.length - 1] + profit_stock + monthly_stock_invest_mortgate_scenario);
+        total_assets_t.push(saved_in_real_estate_t[saved_in_real_estate_t.length - 1] + saved_in_stocks_t[saved_in_stocks_t.length - 1]);
+      }
+
+      const value_of_apartment_final = PURCHASE_PRICE * Math.pow(1 + PROPERTY_APPRECIATION_PCT / 100, N_YEARS);
+      const value_of_stocks = saved_in_stocks_t[saved_in_stocks_t.length - 1];
+      const stock_profits = profits_in_stocks_t.reduce((acc, cur) => acc + cur, 0);
+      const stocks_tax = stock_profits * (CAPITAL_GAINS_TAX_PCT / 100);
+      const stock_value_post_tax = value_of_stocks - stocks_tax;
+      let total_assets = total_assets_t[total_assets_t.length - 1] - stocks_tax;
+      total_assets_t[total_assets_t.length - 1] = total_assets;
+
+      // Calculate months (and years) to pay off the mortgage
+      let months = 0;
+      let balance = debt_t[debt_t.length - 1];
+      while (balance > 0) {
+        const interest_payment = balance * (INTEREST_RATE_PCT / 100) / 12;
+        const principal_payment = monthly_mortgate_payment - interest_payment;
+        balance -= principal_payment;
+        months++;
+        if (months > 10000) break;  // safeguard
+      }
+      const yearsToPayoff = Math.floor(months / 12);
+
+      // Update result text
+      const resultText = 
+`With a monthly budget of $${monthly_budget.toLocaleString()}, of which $${(monthly_mortgate_payment+HAUSGELD_ETC).toLocaleString()} goes to mortgage, hausgeld, etc, and $${monthly_stock_invest_mortgate_scenario.toLocaleString()} goes to stocks,
+Buying for $${PURCHASE_PRICE.toLocaleString()}:
+After $${(PURCHASING_FEES_PCT*PURCHASE_PRICE/100).toLocaleString()} fees paid out of $${DOWN_PAYMENT.toLocaleString()} own capital => borrowing $${loan_amt.toLocaleString()} (${(loan_amt/PURCHASE_PRICE*100).toFixed(2)}%)
+
+After ${N_YEARS} years:
+- $${debt_t[debt_t.length-1].toLocaleString()} still owed
+- on a property worth $${value_of_apartment_final.toLocaleString()}
+- $${stock_value_post_tax.toLocaleString()} in stocks (post-tax)
+- for total assets of $${total_assets.toLocaleString()}
+- would take ${yearsToPayoff} years to repay at same monthly rate
+
+Alternative rent scenarios starting with $${DOWN_PAYMENT.toLocaleString()},
+(while the buy scenario starts lower due to the purchase fees).
+Assuming the same monthly budget of $${monthly_budget.toLocaleString()},
+investing what's left after rent in stocks.
+
+At the end of the period, taxes are paid on the total profits of the stocks.`;
+      document.getElementById("resultText").textContent = resultText;
+
+      // Rent scenarios calculations
+      let rent_assets = {};
+      let rent_profits_t = {};
+      let rent_assets_post_tax = {};
+      rent_scenarios.forEach(rent => {
+        rent_assets[rent] = [DOWN_PAYMENT];
+        rent_profits_t[rent] = [0];
+        rent_assets_post_tax[rent] = [DOWN_PAYMENT];
+      });
+
+      for (let i = 2; i <= totalMonths; i++) {
+        rent_scenarios.forEach(rent => {
+          const monthly_invest = monthly_budget - rent;
+          const last_val = rent_assets[rent][rent_assets[rent].length - 1];
+          const profit = last_val * (STOCKS_APPRECIATION_PCT / 100 / 12);
+          rent_profits_t[rent].push(profit);
+          rent_assets[rent].push(last_val + profit + monthly_invest);
+        });
+      }
+      rent_scenarios.forEach(rent => {
+        const total_profits = rent_profits_t[rent].reduce((acc, cur) => acc + cur, 0);
+        const tax = total_profits * (CAPITAL_GAINS_TAX_PCT / 100);
+        rent_assets_post_tax[rent] = rent_assets[rent].slice();
+        rent_assets_post_tax[rent][rent_assets_post_tax[rent].length - 1] -= tax;
+      });
+
+      // Prepare Plotly traces
+      const x = Array.from({length: totalMonths + 1}, (_, i) => i);
+      let data = [];
+      rent_scenarios.forEach(rent => {
+        data.push({
+          x: x,
+          y: rent_assets_post_tax[rent],
+          mode: 'lines',
+          name: `rent @ $${rent}`
+        });
+      });
+      data.push({
+        x: x,
+        y: total_assets_t,
+        mode: 'lines',
+        name: `Buy\n($${(monthly_mortgate_payment+HAUSGELD_ETC).toLocaleString()}/month)`
+      });
+
+      const layout = {
+        title: 'Assets over time',
+        xaxis: { title: 'Months' },
+        yaxis: { title: 'Total assets ($)' },
+        legend: { 
+          orientation: "h",
+          y: 0,
+          x: 0.5,
+          xanchor: 'center'
+        },
+        margin: {
+          b: 50,  // bottom margin
+          t: 100  // top margin to accommodate legend
+        }
+      };
+
+      Plotly.newPlot('chart', data, layout);
+    }
+
+    // Initial calculation and plot
+    calculateAndPlot();
+  </script>
+</body>
+</html>
